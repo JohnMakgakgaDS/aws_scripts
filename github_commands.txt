@@ -1,0 +1,43 @@
+git clone https://github.com/JohnMakgakgaDS/aws_scripts.git
+cd aws_scripts
+
+touch github_commands.txt
+
+git status
+
+git add .
+
+git commit -m "Add github commands file"
+
+git config --global user.name "JohnMakgakgaDS"
+
+git config --global user.email "johnmakgakgads@gmail.com"
+
+git remote set-url origin https://JohnMakgakgaDS:generatedtoken/JohnMakgakgaDS/aws_scripts.git
+
+git push origin main
+######################################################################################################
+
+#if not team lead
+
+git branch develop
+
+git checkout -b develop
+
+git push -u origin develop
+
+gh pr create --base main --head develop --title "Merge develop into main" --body "Auto-created PR from develop branch"
+
+###########################################################################
+# For staging deployment
+git checkout -b staging
+git add .
+git commit -m "Deploy to staging"
+git push origin staging
+
+# For production deployment
+git checkout main
+git merge staging
+git push origin main
+
+

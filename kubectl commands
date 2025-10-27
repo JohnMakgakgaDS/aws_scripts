@@ -1,0 +1,5 @@
+kubectl get pods -n staging
+kubectl get services -n staging
+kubectl get pods -n production
+kubectl get services -n production
+

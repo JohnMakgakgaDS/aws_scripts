@@ -1,0 +1,96 @@
+# ============================================================
+#Run these commands 
+#Deploy to Staging
+#kubectl apply -k k8s/overlays/staging
+
+#Deploy to Production
+#kubectl apply -k k8s/overlays/production
+# Base Deployment for Laravel (k8s/base/laravel-deployment.yaml)
+
+# ============================================================
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: laravel-deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: laravel
+  template:
+    metadata:
+      labels:
+        app: laravel
+    spec:
+      containers:
+        - name: laravel
+          image: <aws_account_id>.dkr.ecr.us-east-1.amazonaws.com/laravel-app:latest
+          ports:
+            - containerPort: 80
+---
+# ============================================================
+# Base Deployment for Flutter (k8s/base/flutter-deployment.yaml)
+# ============================================================
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: flutter-deployment
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: flutter
+  template:
+    metadata:
+      labels:
+        app: flutter
+    spec:
+      containers:
+        - name: flutter
+          image: <aws_account_id>.dkr.ecr.us-east-1.amazonaws.com/flutter-app:latest
+          ports:
+            - containerPort: 8080
+---
+# ============================================================
+# Kustomization for Base (k8s/base/kustomization.yaml)
+# ============================================================
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+resources:
+  - laravel-deployment.yaml
+  - flutter-deployment.yaml
+---
+# ============================================================
+# Staging Overlay (k8s/overlays/staging/kustomization.yaml)
+# ============================================================
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+bases:
+  - ../../base
+namePrefix: staging-
+namespace: staging
+images:
+  - name: <aws_account_id>.dkr.ecr.us-east-1.amazonaws.com/laravel-app
+    newName: <aws_account_id>.dkr.ecr.us-east-1.amazonaws.com/laravel-app
+    newTag: latest
+  - name: <aws_account_id>.dkr.ecr.us-east-1.amazonaws.com/flutter-app
+    newName: <aws_account_id>.dkr.ecr.us-east-1.amazonaws.com/flutter-app
+    newTag: latest
+---
+# ============================================================
+# Production Overlay (k8s/overlays/production/kustomization.yaml)
+# ============================================================
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+bases:
+  - ../../base
+namePrefix: prod-
+namespace: production
+images:
+  - name: <aws_account_id>.dkr.ecr.us-east-1.amazonaws.com/laravel-app
+    newName: <aws_account_id>.dkr.ecr.us-east-1.amazonaws.com/laravel-app
+    newTag: latest
+  - name: <aws_account_id>.dkr.ecr.us-east-1.amazonaws.com/flutter-app
+    newName: <aws_account_id>.dkr.ecr.us-east-1.amazonaws.com/flutter-app
+    newTag: latest
+

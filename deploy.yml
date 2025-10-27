@@ -1,0 +1,70 @@
+#from bash
+#.github/workflows/deploy.yml
+#Paste the following commands into .github/workflows/deploy.yml:
+name: Deploy to Amazon EKS
+
+on:
+  push:
+    branches:
+      - main
+      - staging
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout Code
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Step 2: Configure AWS credentials
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
+
+      # Step 3: Login to Amazon ECR
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      # Step 4: Build and Push Docker Images
+      - name: Build, tag, and push Docker images
+        env:
+          AWS_ACCOUNT_ID: ${{ secrets.AWS_ACCOUNT_ID }}
+          REGION: us-east-1
+        run: |
+          docker build -t laravel-app ./laravel
+          docker build -t flutter-app ./flutter
+
+          docker tag laravel-app:latest $AWS_ACCOUNT_ID.dkr.ecr.$REGION.amazonaws.com/laravel-app:latest
+          docker tag flutter-app:latest $AWS_ACCOUNT_ID.dkr.ecr.$REGION.amazonaws.com/flutter-app:latest
+
+          docker push $AWS_ACCOUNT_ID.dkr.ecr.$REGION.amazonaws.com/laravel-app:latest
+          docker push $AWS_ACCOUNT_ID.dkr.ecr.$REGION.amazonaws.com/flutter-app:latest
+
+      # Step 5: Set up kubectl for EKS
+      - name: Set up kubectl for Amazon EKS
+        uses: aws-actions/configure-kubectl@v1
+        with:
+          cluster-name: your-cluster-name
+          region: us-east-1
+
+      # Step 6: Deploy to Kubernetes
+      - name: Deploy Laravel and Flutter apps to EKS
+        run: |
+          if [[ "${GITHUB_REF##*/}" == "staging" ]]; then
+            kubectl apply -k k8s/overlays/staging
+          else
+            kubectl apply -k k8s/overlays/production
+          fi
+
+      # Step 7: Verify Deployments
+      - name: Verify deployment status
+        run: |
+          kubectl get pods --all-namespaces
+          kubectl get services --all-namespaces
+

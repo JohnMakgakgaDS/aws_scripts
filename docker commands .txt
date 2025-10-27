@@ -1,0 +1,26 @@
+docker --version
+docker compose version
+
+# Build Laravel Docker image
+docker build -t laravel-app ./laravel
+
+# Build Flutter Docker image
+docker build -t flutter-app ./flutter
+
+docker images
+
+docker run -d -p 8080:80 --name laravel-app laravel-app
+
+
+docker run -d -p 8081:8080 --name flutter-app flutter-app
+
+#Purpose	Command
+Clone repo	git clone https://github.com/JohnMakgakgaDS/aws_scripts.git
+Build images	docker build -t laravel-app ./laravel
+docker build -t flutter-app ./flutter
+Run containers	docker run -d -p 8080:80 laravel-app
+docker run -d -p 8081:8080 flutter-app
+Check containers	docker ps
+Stop containers	docker stop laravel-app flutter-app
+Clean up	docker rm -f $(docker ps -aq)
+
