@@ -1,5 +1,13 @@
 #!/bin/bash
 # Create S3 bucket and upload file
+#Make the shell script executable:
+
+#chmod +x setup.sh
+
+
+#Run it:
+
+#./Create_S3_bucket.sh
 
 BUCKET_NAME="my-example-bucket-$RANDOM"
 REGION="us-east-1"

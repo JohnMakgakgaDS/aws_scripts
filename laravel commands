@@ -1,0 +1,9 @@
+#If you recently cloned a project, make sure you ran:
+
+composer install
+
+
+#This installs Laravel’s dependencies and ensures the project is usable.
+
+#Run the server 
+php artisan serve

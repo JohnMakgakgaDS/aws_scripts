@@ -13,6 +13,16 @@ git config --global user.name "JohnMakgakgaDS"
 
 git config --global user.email "johnmakgakgads@gmail.com"
 
+# For macOS
+git config --global credential.helper osxkeychain
+
+# For Windows
+git config --global credential.helper wincred
+
+# For Linux
+git config --global credential.helper store
+
+
 git remote set-url origin https://JohnMakgakgaDS:generatedtoken/JohnMakgakgaDS/aws_scripts.git
 
 git push origin main
