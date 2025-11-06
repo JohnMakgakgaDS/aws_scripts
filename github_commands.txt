@@ -21,11 +21,19 @@ git config --global credential.helper wincred
 
 # For Linux
 git config --global credential.helper store
+git push 
+ssh-keygen -t ed25519 -C "johnmakgakgads@gmail.com"
 
-
-git remote set-url origin https://JohnMakgakgaDS:generatedtoken/JohnMakgakgaDS/aws_scripts.git
-
+or 
+git remote set-url origin https://token/JohnMakgakgaDS/CodeAlpha_CyberSecurity.git
+ git remote set-url origin https://JohnMakgakgaDS:github_pat/CodeAlpha_CyberSecurity.git
 git push origin main
+git remote add origin https://github.com/JohnMakgakgaDS/CodeAlpha_CyberSecurity.git
+git remote set-url origin https://github.com/JohnMakgakgaDS/CodeAlpha_CyberSecurity.git
+https://github.com/JohnMakgakgaDS/budgetapp.git
+
+git remote set-url origin https://token/JohnMakgakgaDS/CodeAlpha_CyberSecurity.git
+
 ######################################################################################################
 
 #if not team lead
